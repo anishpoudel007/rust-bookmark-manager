@@ -4,7 +4,7 @@ mod file_handler;
 
 fn main() {
     let matches = command!()
-        .about("This program generates greeting card for the user")
+        .about("Rust bookmark manager CLI")
         .subcommand(
             Command::new("create")
                 .about("Create bookmark entry")
