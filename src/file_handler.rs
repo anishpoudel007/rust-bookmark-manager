@@ -1,6 +1,6 @@
 use std::{
     fs::{File, OpenOptions},
-    io::{Read, Write},
+    io::{BufRead, BufReader, Write},
 };
 
 pub fn save_bookmark(content: String) -> bool {
@@ -20,12 +20,11 @@ pub fn save_bookmark(content: String) -> bool {
 pub fn list_bookmark() {
     let file_path = "/home/anishpoudel/delete-me-later/bm.txt";
 
-    let mut file = File::open(file_path).expect("File not found");
+    let file = File::open(file_path).expect("File not found");
 
-    let mut content = String::new();
+    let reader = BufReader::new(file);
 
-    file.read_to_string(&mut content)
-        .expect("Could not read file");
-
-    println!("{}", content);
+    for line in reader.lines() {
+        println!("{:?}", line.expect("Error reading content"));
+    }
 }
