@@ -8,18 +8,20 @@ fn main() {
         .subcommand(
             Command::new("create")
                 .about("Create bookmark entry")
+                .alias("add")
                 .arg(Arg::new("url").help("URL to bookmark").required(true)),
         )
-        .subcommand(Command::new("list").about("List bookmarks"))
+        .subcommand(Command::new("list").about("List bookmarks").alias("ls"))
         .get_matches();
 
     if let Some(matches) = matches.subcommand_matches("create") {
         match matches.get_one::<String>("url") {
             Some(url) => {
                 file_handler::save_bookmark(url.clone());
+                println!("Bookmark added.");
             }
             None => {
-                println!("NOne");
+                println!("None");
             }
         }
     }
