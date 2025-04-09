@@ -1,23 +1,19 @@
-use clap::{command, Arg, Command};
-
-mod file_handler;
+use bm::{
+    argc::argc_app,
+    file_handler::{init_bookmark, list_bookmark, save_bookmark},
+};
 
 fn main() {
-    let matches = command!()
-        .about("Rust bookmark manager CLI")
-        .subcommand(
-            Command::new("create")
-                .about("Create bookmark entry")
-                .alias("add")
-                .arg(Arg::new("url").help("URL to bookmark").required(true)),
-        )
-        .subcommand(Command::new("list").about("List bookmarks").alias("ls"))
-        .get_matches();
+    let matches = argc_app();
+
+    if matches.subcommand_matches("init").is_some() {
+        init_bookmark();
+    }
 
     if let Some(matches) = matches.subcommand_matches("create") {
         match matches.get_one::<String>("url") {
             Some(url) => {
-                file_handler::save_bookmark(url.clone());
+                save_bookmark(url.clone());
                 println!("Bookmark added.");
             }
             None => {
@@ -26,7 +22,7 @@ fn main() {
         }
     }
 
-    if let Some(matches) = matches.subcommand_matches("list") {
-        file_handler::list_bookmark();
+    if matches.subcommand_matches("list").is_some() {
+        list_bookmark();
     }
 }
