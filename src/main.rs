@@ -3,26 +3,26 @@ use bm::{
     file_handler::{init_bookmark, list_bookmark, save_bookmark},
 };
 
+fn handle_create(matches: &clap::ArgMatches) {
+    if let Some(url) = matches.get_one::<String>("url") {
+        let is_saved = save_bookmark(url.clone());
+        if is_saved {
+            println!("Bookmark added.");
+        } else {
+            println!("Bookmark could not be added.");
+        }
+    } else {
+        println!("URL is required to create a bookmark.");
+    }
+}
+
 fn main() {
     let matches = argc_app();
 
-    if matches.subcommand_matches("init").is_some() {
-        init_bookmark();
-    }
-
-    if let Some(matches) = matches.subcommand_matches("create") {
-        match matches.get_one::<String>("url") {
-            Some(url) => {
-                save_bookmark(url.clone());
-                println!("Bookmark added.");
-            }
-            None => {
-                println!("None");
-            }
-        }
-    }
-
-    if matches.subcommand_matches("list").is_some() {
-        list_bookmark();
+    match matches.subcommand() {
+        Some(("init", _)) => init_bookmark(),
+        Some(("create", sub_matches)) => handle_create(sub_matches),
+        Some(("list", _)) => list_bookmark(),
+        _ => eprintln!("Invalid command. Use `init`, `create`, or `list`."),
     }
 }
